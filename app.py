@@ -108,7 +108,7 @@ def build_rag_chain():
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.5-flash",
         temperature=0.2,
-        google_api_key="AIzaSyBXbHmhNsiZFKVwsuqkSEdu03n5xPZKqUg"
+          google_api_key=st.secrets["GOOGLE_API_KEY"]
     )
     system_prompt = (
         "You are a professional Library Assistant. "
