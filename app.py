@@ -154,14 +154,14 @@ if query:
 
         # APA Citations
         
-st.markdown("---")
-st.markdown("<small>📎 <b>References</b></small>", unsafe_allow_html=True)
-seen_citations = set()
-for doc in result["context"]:
-    citation = build_apa_citation(doc.metadata)
-    if citation not in seen_citations:
-        seen_citations.add(citation)
-        st.caption(citation)
+        st.markdown("---")
+        st.markdown("<small>📎 <b>References</b></small>", unsafe_allow_html=True)
+        seen_citations = set()
+        for doc in result["context"]:
+            citation = build_apa_citation(doc.metadata)
+            if citation not in seen_citations:
+                seen_citations.add(citation)
+                st.caption(citation)
 
         # Source Chunks
         with st.expander("View source chunks"):
