@@ -9,71 +9,243 @@ from langchain_core.prompts import ChatPromptTemplate
 
 # Custom CSS
 st.markdown("""
+
+```python
+# ── PAGE CONFIG ─────────────────────────────────────────────
+st.set_page_config(
+    page_title="Library Assistant",
+    page_icon="📚",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+# ── MODERN UI / CSS ─────────────────────────────────────────
+st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+            
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --bg: #0B1120;
+    --card: rgba(15, 23, 42, 0.72);
+    --border: rgba(255,255,255,0.08);
+    --text: #F8FAFC;
+    --muted: #94A3B8;
+    --accent: #7C3AED;
+    --accent-2: #06B6D4;
+}
 
 html, body, [class*="css"] {
-    font-family: 'DM Sans', sans-serif;
-    background-color: #0F0F0F;
-    color: #E8E2D9;
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at top left, #111827 0%, #0B1120 45%, #020617 100%);
+    color: var(--text);
 }
-#MainMenu, footer, header { visibility: hidden;
-}
-.block-container { padding: 2rem 3rem; max-width: 860px; }
 
+#MainMenu,
+footer,
+header {
+    visibility: hidden;
+}
+
+.stApp {
+    background: radial-gradient(circle at top left, #111827 0%, #0B1120 45%, #020617 100%);
+}
+
+.block-container {
+    max-width: 920px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* HERO SECTION */
 .hero {
-    text-align: center;
-    padding: 3rem 0 2rem;
-    border-bottom: 1px solid #222;
+    position: relative;
+    overflow: hidden;
+    padding: 2.5rem;
     margin-bottom: 2rem;
+    border-radius: 28px;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg,
+        rgba(124,58,237,0.22),
+        rgba(6,182,212,0.12),
+        rgba(15,23,42,0.95));
+    backdrop-filter: blur(18px);
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.06);
 }
-.hero h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.8rem;
-    color: #E8E2D9;
-    letter-spacing: -0.5px;
-    margin: 0;
-}
-.hero p { color: #666; font-size: 0.95rem; font-weight: 300; margin-top: 0.5rem; letter-spacing: 0.5px; }
-.hero .dot { color: #C9A96E; }
 
-[data-testid="stChatMessage"] { background: transparent !important; border: none !important; padding: 0.5rem 0 !important; }
+.hero::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(124,58,237,0.18);
+    border-radius: 50%;
+    top: -140px;
+    right: -120px;
+    filter: blur(60px);
+}
+
+.hero-grid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-text h1 {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    color: white;
+}
+
+.hero-text p {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 560px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .45rem .85rem;
+    margin-bottom: 1.2rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #CBD5E1;
+    font-size: .82rem;
+    font-weight: 500;
+}
+
+.hero-logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.hero-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* CHAT BUBBLES */
+[data-testid="stChatMessage"] {
+    background: transparent !important;
+    border: none !important;
+}
+
+[data-testid="stChatMessageAvatarUser"] {
+    background: linear-gradient(135deg, #7C3AED, #06B6D4) !important;
+}
+
+[data-testid="stChatMessageAvatarAssistant"] {
+    background: #111827 !important;
+}
+
+[data-testid="stChatMessage"] .stMarkdown {
+    padding: 1rem 1.2rem;
+    border-radius: 20px;
+    line-height: 1.7;
+}
+
 [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) .stMarkdown {
-    background: #1A1A1A; border: 1px solid #2A2A2A;
-    border-radius: 16px 16px 4px 16px; padding: 0.9rem 1.2rem; color: #E8E2D9;
+    background: linear-gradient(135deg, rgba(124,58,237,.22), rgba(6,182,212,.15));
+    border: 1px solid rgba(124,58,237,.25);
 }
+
 [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarAssistant"]) .stMarkdown {
-    background: #161410; border: 1px solid #C9A96E33;
-    border-radius: 16px 16px 16px 4px; padding: 0.9rem 1.2rem; color: #E8E2D9;
+    background: rgba(15,23,42,.72);
+    border: 1px solid rgba(255,255,255,.06);
 }
-[data-testid="stChatInput"] { border-top: 1px solid #222 !important; padding-top: 1rem; }
+
+/* INPUT */
+[data-testid="stChatInput"] {
+    padding-top: 1rem;
+}
+
 [data-testid="stChatInputTextArea"] {
-    background: #1A1A1A !important; border: 1px solid #2A2A2A !important;
-    border-radius: 12px !important; color: #E8E2D9 !important;
-    font-family: 'DM Sans', sans-serif !important;
+    background: rgba(15,23,42,.9) !important;
+    color: white !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(255,255,255,.08) !important;
+    padding: .8rem 1rem !important;
 }
+
 [data-testid="stChatInputTextArea"]:focus {
-    border-color: #C9A96E !important; box-shadow: 0 0 0 2px #C9A96E22 !important;
+    border: 1px solid rgba(124,58,237,.7) !important;
+    box-shadow: 0 0 0 4px rgba(124,58,237,.15) !important;
 }
+
+/* REFERENCES */
+.reference-card {
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
+    border-radius: 18px;
+    background: rgba(15,23,42,.65);
+    border: 1px solid rgba(255,255,255,.06);
+}
+
 [data-testid="stExpander"] {
-    background: #111 !important; border: 1px solid #222 !important;
-    border-radius: 10px !important; margin-top: 0.5rem;
+    border-radius: 18px !important;
+    border: 1px solid rgba(255,255,255,.06) !important;
+    background: rgba(15,23,42,.55) !important;
 }
-[data-testid="stExpander"] summary { color: #666 !important; font-size: 0.85rem !important; }
-hr { border-color: #222 !important; }
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #0F0F0F; }
-::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 2px; }
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.12);
+    border-radius: 20px;
+}
+
 </style>
 
 <div class="hero">
-    <h1>📚 Library Assistant<span class="dot">.</span></h1>
-    <p>Ask anything about your library collection</p>
+    <div class="hero-grid">
+
+        <div class="hero-text">
+            <div class="badge">
+                ✨ AI Powered Library Retrieval System
+            </div>
+
+            <h1>
+                Library Assistant
+            </h1>
+
+            <p>
+                Search your library collection intelligently using Retrieval-Augmented Generation (RAG), semantic search, and Gemini AI.
+            </p>
+        </div>
+
+
+        <!-- ================= LOGO PLACE ================= -->
+        <div class="hero-logo">
+            <img src="data:image/png;logo,{}">
+        </div>
+        <!-- ============================================== -->
+
+    </div>
 </div>
-""", unsafe_allow_html=True)
-
-st.set_page_config(page_title="Library Assistant", page_icon="📚", layout="centered")
-
 
 # APA Citation Helper
 def build_apa_citation(metadata):
